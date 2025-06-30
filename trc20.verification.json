@@ -1,0 +1,40 @@
+{
+  "version": "0.8.6+commit.11564f7e.Emscripten.clang",
+  "contractName": "RMBToken",
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.6+commit.11564f7e.Emscripten.clang",
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    }
+  },
+  "sourceCode": {
+    "C:/Users/General User/desktop/rmbt/rmbt_tronbox_mainnet/contracts/RMBToken.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.6;\n\ncontract RMBToken {\n    string public name;\n    string public symbol;\n    uint8 public decimals;\n    uint256 public totalSupply;\n\n    address public owner;\n    bool private _initialized;\n    bool public paused;\n\n    mapping(address => uint256) public balances;\n    mapping(address => mapping(address => uint256)) public allowances;\n\n    event Initialized(string name, string symbol, uint8 decimals, uint256 initialSupply);\n    event Transfer(address indexed from, address indexed to, uint256 value);\n    event Approval(address indexed owner, address indexed spender, uint256 value);\n\n    modifier onlyOnce() {\n        require(!_initialized, \"Already initialized\");\n        _;\n    }\n\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Not owner\");\n        _;\n    }\n\n    modifier whenNotPaused() {\n        require(!paused, \"Token transfers are paused\");\n        _;\n    }\n\n    function initialize(\n        string memory _name,\n        string memory _symbol,\n        uint8 _decimals,\n        uint256 _initialSupply\n    ) public onlyOnce {\n        name = _name;\n        symbol = _symbol;\n        decimals = _decimals;\n        totalSupply = _initialSupply;\n        balances[msg.sender] = _initialSupply;\n        owner = msg.sender;\n        _initialized = true;\n        emit Initialized(_name, _symbol, _decimals, _initialSupply);\n        emit Transfer(address(0), msg.sender, _initialSupply);\n    }\n\n    function pause() public onlyOwner {\n        paused = true;\n    }\n\n    function unpause() public onlyOwner {\n        paused = false;\n    }\n\n    function balanceOf(address account) public view returns (uint256) {\n        return balances[account];\n    }\n\n    function transfer(address recipient, uint256 amount) public whenNotPaused returns (bool) {\n        require(balances[msg.sender] >= amount, \"Not enough balance\");\n        balances[msg.sender] -= amount;\n        balances[recipient] += amount;\n        emit Transfer(msg.sender, recipient, amount);\n        return true;\n    }\n\n    function approve(address spender, uint256 amount) public whenNotPaused returns (bool) {\n        allowances[msg.sender][spender] = amount;\n        emit Approval(msg.sender, spender, amount);\n        return true;\n    }\n\n    function allowance(address owner_, address spender) public view returns (uint256) {\n        return allowances[owner_][spender];\n    }\n\n    function transferFrom(address sender, address recipient, uint256 amount) public whenNotPaused returns (bool) {\n        require(balances[sender] >= amount, \"Not enough balance\");\n        require(allowances[sender][msg.sender] >= amount, \"Allowance too low\");\n        balances[sender] -= amount;\n        balances[recipient] += amount;\n        allowances[sender][msg.sender] -= amount;\n        emit Transfer(sender, recipient, amount);\n        return true;\n    }\n\n    function mint(address to, uint256 amount) public onlyOwner whenNotPaused {\n        totalSupply += amount;\n        balances[to] += amount;\n        emit Transfer(address(0), to, amount);\n    }\n\n    function burn(address from, uint256 amount) public onlyOwner whenNotPaused {\n        require(balances[from] >= amount, \"Burn amount exceeds balance\");\n        balances[from] -= amount;\n        totalSupply -= amount;\n        emit Transfer(from, address(0), amount);\n    }\n\n    function initialized() public view returns (bool) {\n        return _initialized;\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode"
+        ]
+      }
+    }
+  },
+  "contractAddress": "TBWDTcjuG8opK9m52XNhjPvgN64WisE8GT",
+  "owner": "TBWDTcjuG8opK9m52XNhjPvgN64WisE8GT",
+  "issuer": "TBWDTcjuG8opK9m52XNhjPvgN64WisE8GT",
+  "name": "Rapid Modular Blockchain Toolkit",
+  "symbol": "RMBT",
+  "decimals": 8,
+  "totalSupply": "75000000000000",
+  "description": "RMBT is a modular blockchain toolkit deployed on TRON, supporting infrastructure and token-based systems.",
+  "website": "https://rmbt.io",
+  "github": "https://github.com/rmbtcoin/rmbt-tron-token",
+  "email": "support@rmbt.io",
+  "whitepaper": "https://rmbt.io/wp-content/uploads/2025/06/RMBT-WHITEPAPER-%E2%80%93-RAPID-MODULAR-BLOCKCHAIN-TOOLKIT-JUNE2025-1.pdf"
+}
